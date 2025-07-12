@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="style.css" />
+    <title>AgriGuru - Smart Farming Assistant</title>
+  </head>
+  <body>
+    <div class="frame">
+      <header class="header">
+        <a href="/" class="logo">
+          <h1 class="logo-text">AgriGuru 🌿</h1>
+        </a>
+        <nav class="nav">
+          <ul class="nav-list">
+            <li class="nav-item"><a href="#weather" class="nav-link">Weather</a></li>
+            <li class="nav-item"><a href="#crop" class="nav-link">Crop Suggestion</a></li>
+            <li class="nav-item"><a href="#disease" class="nav-link">Disease Detection</a></li>
+            <li class="nav-item"><a href="#market" class="nav-link">Mandi Prices</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="/login" class="btn btn-outline">Login</a>
+          <a href="/signup" class="btn btn-primary">Sign Up</a>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <section id="weather" class="section-block">
+          <h2 class="section-title">📍 Real-time Weather Forecast</h2>
+          <p class="section-description">Allow location access to get real-time weather insights for your region.</p>
+          <button class="btn btn-primary btn-large" id="detect-location">Detect My Location</button>
+          <div class="weather-details" id="weather-output">
+            <p class="weather-placeholder">Weather details will appear here once location is granted and fetched.</p>
+          </div>
+        </section>
+
+        <section id="crop" class="section-block">
+          <h2 class="section-title">🌾 Crop Recommendation</h2>
+          <p class="section-description">Get AI-powered crop suggestions based on NPK, pH, and your region.</p>
+          <form id="crop-form">
+            <input type="number" placeholder="Nitrogen (N)" name="n" required />
+            <input type="number" placeholder="Phosphorus (P)" name="p" required />
+            <input type="number" placeholder="Potassium (K)" name="k" required />
+            <input type="number" step="0.1" placeholder="pH value" name="ph" required />
+            <input type="text" placeholder="City" name="city" required />
+            <button type="submit" class="btn btn-outline">Get Suggestions</button>
+          </form>
+          <div id="crop-results"></div>
+        </section>
+
+        <section id="disease" class="section-block">
+          <h2 class="section-title">🌿 Plant Disease Detection</h2>
+          <p class="section-description">Upload a leaf image to diagnose the plant disease.</p>
+          <form id="disease-form">
+            <input type="file" name="file" accept="image/*" required />
+            <button type="submit" class="btn btn-outline">Upload & Detect</button>
+          </form>
+          <div id="disease-result"></div>
+        </section>
+
+        <section id="market" class="section-block">
+          <h2 class="section-title">📈 Mandi Price Trends</h2>
+          <p class="section-description">Check commodity prices in your district's local markets.</p>
+         <form id="mandi-form">
+            <select id="state-select" name="state" required>
+                <option value="">Select State</option>
+            </select>
+
+            <select id="district-select" name="district" required>
+                <option value="">Select District</option>
+            </select>
+
+            <select id="commodity-select" name="commodity" required>
+                <option value="">Select Commodity</option>
+            </select>
+
+            <input type="number" name="limit" value="10" hidden />
+            <button type="submit" class="btn btn-outline">Fetch Prices</button>
+        </form>
+ 
+          <div id="mandi-result"></div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p class="footer-text">Made with ❤ for farmers | AgriGuru © 2025</p>
+        <div class="language-selector">
+          <span class="language-option">🌐 English</span>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      // Weather
+      document.getElementById('detect-location').addEventListener('click', () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(pos => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            fetch(`http://127.0.0.1:8000/weather-info?city=${lat},${lon}`)
+              .then(res => res.json())
+              .then(data => {
+                document.getElementById("weather-output").innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+              });
+          });
+        }
+      });
+
+      // Crop
+      document.getElementById("crop-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const form = new FormData(this);
+        const params = new URLSearchParams();
+        form.forEach((value, key) => params.append(key, value));
+        fetch("http://127.0.0.1:8000/predict-crop?" + params.toString())
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("crop-results").innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+          });
+      });
+
+      // Disease
+      document.getElementById("disease-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const fileInput = this.querySelector("input[type='file']");
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+        fetch("http://127.0.0.1:8000/predict_disease", {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("disease-result").innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+          });
+      });
+
+      // Mandi Prices
+      document.getElementById("mandi-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const form = new FormData(this);
+        const params = new URLSearchParams();
+        form.forEach((value, key) => params.append(key, value));
+        fetch("http://127.0.0.1:8000/mandi-prices?" + params.toString())
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("mandi-result").innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+          });
+      });
+      </script>
+    <script>
+  // Existing JS code...
+
+  // --- Weather block ---
+  document.getElementById('detect-location').addEventListener('click', () => {
+    // ...
+  });
+
+  // --- Crop block ---
+  document.getElementById("crop-form").addEventListener("submit", function (e) {
+    // ...
+  });
+
+  // --- Disease block ---
+  document.getElementById("disease-form").addEventListener("submit", function (e) {
+    // ...
+  });
+
+  // --- Mandi Prices block ---
+  document.getElementById("mandi-form").addEventListener("submit", function (e) {
+    // ...
+  });
+
+  // ✅ Append this code next:
+  // --- Populate State, District, and Commodity Dropdowns ---
+  window.addEventListener("DOMContentLoaded", () => {
+    fetch("http://127.0.0.1:8000/mandi/states")
+      .then(res => res.json())
+      .then(data => {
+        const stateSelect = document.getElementById("state-select");
+        data.states.forEach(state => {
+          const opt = document.createElement("option");
+          opt.value = state;
+          opt.textContent = state;
+          stateSelect.appendChild(opt);
+        });
+      });
+
+    fetch("http://127.0.0.1:8000/mandi/commodities")
+      .then(res => res.json())
+      .then(data => {
+        const commoditySelect = document.getElementById("commodity-select");
+        data.commodities.forEach(crop => {
+          const opt = document.createElement("option");
+          opt.value = crop;
+          opt.textContent = crop;
+          commoditySelect.appendChild(opt);
+        });
+      });
+
+    document.getElementById("state-select").addEventListener("change", e => {
+      const state = e.target.value;
+      fetch(`http://127.0.0.1:8000/mandi/districts?state=${encodeURIComponent(state)}`)
+        .then(res => res.json())
+        .then(data => {
+          const districtSelect = document.getElementById("district-select");
+          districtSelect.innerHTML = `<option value="">Select District</option>`;
+          data.districts.forEach(dist => {
+            const opt = document.createElement("option");
+            opt.value = dist;
+            opt.textContent = dist;
+            districtSelect.appendChild(opt);
+          });
+        });
+    });
+  });
+</script>
+</body>
+</html>

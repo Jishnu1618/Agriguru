@@ -1,0 +1,27 @@
+<form id="crop-form">
+  <input type="number" name="n" placeholder="Nitrogen" required />
+  <input type="number" name="p" placeholder="Phosphorous" required />
+  <input type="number" name="k" placeholder="Potassium" required />
+  <input type="number" name="ph" placeholder="Soil pH" required />
+  <input type="text" name="city" placeholder="City Name" required />
+  <button type="submit">Get Crop Suggestion</button>
+</form>
+
+<div id="crop-result"></div>
+
+<script>
+  document.getElementById("crop-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const query = new URLSearchParams([...form.entries()]).toString();
+
+    const response = await fetch(`http://localhost:8000/predict-crop?${query}`);
+    const result = await response.json();
+
+    document.getElementById("crop-result").innerHTML = `
+      <h4>Top 3 Crop Suggestions:</h4>
+      <ul>
+        ${result.top_3_crops.map(c => `<li>${c.crop} - ${c.confidence}%</li>`).join("")}
+      </ul>`;
+  });
+</script>

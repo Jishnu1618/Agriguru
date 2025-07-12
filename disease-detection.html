@@ -1,0 +1,23 @@
+<form id="upload-form" enctype="multipart/form-data">
+  <input type="file" name="file" accept="image/*" required />
+  <button type="submit">Detect Disease</button>
+</form>
+<div id="disease-result"></div>
+
+<script>
+  document.getElementById("upload-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+
+    const response = await fetch("http://localhost:8000/predict_disease", {
+      method: "POST",
+      body: form,
+    });
+
+    const result = await response.json();
+    document.getElementById("disease-result").innerHTML = `
+      <h4>Disease: ${result.predicted_disease}</h4>
+      <p>Confidence: ${result.confidence}</p>
+      <p>Cure: ${result.suggested_cure}</p>`;
+  });
+</script>

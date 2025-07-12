@@ -1,0 +1,23 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f3f3f3;
+}
+
+.container {
+  margin-top: 80px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#result {
+  margin-top: 20px;
+  font-size: 1.2rem;
+}

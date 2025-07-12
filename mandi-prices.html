@@ -1,0 +1,24 @@
+<form id="mandi-form">
+  <input type="text" name="commodity" placeholder="Commodity" required />
+  <input type="text" name="state" placeholder="State" />
+  <input type="text" name="district" placeholder="District" />
+  <input type="number" name="limit" placeholder="Results Limit" value="10" />
+  <button type="submit">Fetch Prices</button>
+</form>
+<div id="mandi-result"></div>
+
+<script>
+  document.getElementById("mandi-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const query = new URLSearchParams([...form.entries()]).toString();
+
+    const res = await fetch(`http://localhost:8000/mandi-prices?${query}`);
+    const data = await res.json();
+
+    document.getElementById("mandi-result").innerHTML = `
+      <h4>${data.commodity} Prices:</h4>
+      <ul>${data.results.map(item => `
+        <li>${item.market}, ${item.district} - ₹${item.modal_price}/quintal</li>`).join("")}</ul>`;
+  });
+</script>
