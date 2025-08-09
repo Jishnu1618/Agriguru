@@ -6,7 +6,7 @@ from db.mongo import db
 from datetime import datetime
 
 
-API_KEY = "579b464db66ec23bdd000001fc9a038368994fc46e756e42046b7710f83"
+API_KEY = "579b464db66ec23bdd00x0001fc9a038368994fc46e756e42046b7710f83"
 RESOURCE_ID = "35be999b-0208-4354-b557-f6ca9a53es55de"
 BASE_URL = f"https://api.data.gov.in/resource/{RESOURCE_ID}?api-key={API_KEY}&format=json"
 
@@ -74,4 +74,5 @@ def get_unique_crops():
             crops.add(r["crop"].strip())
 
     return sorted(list(crops))
+
 
