@@ -6,7 +6,7 @@ import requests
 from utils.embedding_utils import embed_questions, build_faiss_index, search
 
 # Your API key and URL (replace RESOURCE_ID with actual ID)
-API_KEY = "579b464db66ec23bdd000001fc9a038364fc46e756e42046b7710f83"
+API_KEY = "579b464db66ec23bdd000001fc9a03836ef4fc46e756e42046b7710f83"
 RESOURCE_ID = "cef25fe2-9231-4128-8aec-2c948fedd43f"  # ← Put correct resource ID here
 API_URL = f"https://api.data.gov.in/resource/{RESOURCE_ID}?api-key={API_KEY}&format=json&limit=1000"
 
@@ -39,4 +39,5 @@ def chat_interface():
         for i, res in enumerate(results, 1):
             print(f"{i}. Q: {res['question']}")
             print(f"   A: {res['answer']}\n")
+
 
