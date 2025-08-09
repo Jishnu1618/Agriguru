@@ -3,8 +3,8 @@ import requests
 
 router = APIRouter()
 
-API_KEY = "579b464db66ec23bdd000001fc9a038364fc46e756e42046b7710f83"
-RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070"
+API_KEY = "579b464db66ec23bdd000001fc9a038445364fc46e756e42046b7710f83"
+RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0078970"
 BASE_URL = f"https://api.data.gov.in/resource/{RESOURCE_ID}?api-key={API_KEY}&format=json&limit=1000"
 
 def fetch_all_data():
@@ -55,3 +55,4 @@ def get_prices(
 
     ]
     return {"results": filtered}
+
