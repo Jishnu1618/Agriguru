@@ -39,10 +39,10 @@ def is_dangerous(condition: str, temp: float, rainfall: float, wind_kph: float) 
 
 # ------------------ Load Models ------------------
 
-crop_model = joblib.load("models/crop_prediction_model.pkl")
+crop_model = joblib.load("models/crop_prediction_model")
 label_encoder = joblib.load("models/label_encoder.pkl")
 
-disease_model = tf.keras.models.load_model("models/plant_disease_model.h5")
+disease_model = tf.keras.models.load_model("models/plant_disease_model")
 with open("models/class_indices.json", "r") as f:
     class_indices = json.load(f)
 disease_labels = list(class_indices.keys())
@@ -53,7 +53,7 @@ with open("models/disease_cures.json", "r") as f:
 
 # ------------------ Weather API Setup ------------------
 
-API_KEY = "73692c9477c84540b2455836251107"
+API_KEY = "73692c9477c84540b245583346251107"
 BASE_URL = "http://api.weatherapi.com/v1/current.json"
 
 def fetch_weather(city):
@@ -191,4 +191,5 @@ from mandi import mandi_router
 app.include_router(mandi_router.router)
 from chatbot.chatbot_router import router as chatbot_router
 app.include_router(chatbot_router)
+
 
