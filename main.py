@@ -40,7 +40,7 @@ def is_dangerous(condition: str, temp: float, rainfall: float, wind_kph: float) 
 # ------------------ Load Models ------------------
 
 crop_model = joblib.load("models/crop_prediction_model")
-label_encoder = joblib.load("models/label_encoder.pkl")
+label_encoder = joblib.load("models/label_encoder")
 
 disease_model = tf.keras.models.load_model("models/plant_disease_model")
 with open("models/class_indices.json", "r") as f:
@@ -191,5 +191,6 @@ from mandi import mandi_router
 app.include_router(mandi_router.router)
 from chatbot.chatbot_router import router as chatbot_router
 app.include_router(chatbot_router)
+
 
 
